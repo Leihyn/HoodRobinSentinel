@@ -78,22 +78,39 @@ the number gates money. It also removes the incentive to farm a perfect score
 from a handful of cheap mandates, because the bound widens on thin evidence
 rather than rewarding it.
 
-## Status
+## Live on Robinhood Chain testnet
 
-Contracts are written and tested. **Not yet deployed:** the deployer has no
-balance on Robinhood Chain testnet.
+| Contract | Address |
+|---|---|
+| AgentRegistry | [`0xa736E54B0fEa99809dC7eE9ce24E8B54ca6219eb`](https://explorer.testnet.chain.robinhood.com/address/0xa736E54B0fEa99809dC7eE9ce24E8B54ca6219eb) |
+| MandateManager | [`0xA4C2f6F2BCA05d93F197133e9DCD25273ae6D909`](https://explorer.testnet.chain.robinhood.com/address/0xA4C2f6F2BCA05d93F197133e9DCD25273ae6D909) |
 
-```
-forge test
-# 15 passed, 0 failed  (includes a 257-run fuzz over the score function)
-```
+Chain id 46630, ETH for gas. `forge test` is 15/15, including a 257-run fuzz
+over the score function.
+
+### One full cycle, settled on chain
+
+Agent 1 registered with a 0.002 ETH stake, took a mandate for 10,000 units of
+principal against a 100-unit target, earned it through an allowlisted venue, and
+was settled by an ordinary call that passes nothing but the id.
 
 | | |
 |---|---|
-| Robinhood Chain testnet | chain id **46630**, verified live at block 120,585,121 |
-| Robinhood Chain mainnet | chain id **4663**, verified live at block 64,891,802 |
-| Gas token | ETH |
-| Explorer | `https://explorer.testnet.chain.robinhood.com` |
+| Open mandate | [`0xfb1fa8c0…11cc70`](https://explorer.testnet.chain.robinhood.com/tx/0xfb1fa8c0e4c6d20aa2f029b31f71c4513a65d14712c2679ee1133533ae11cc70) |
+| Agent works it | [`0x733a0af5…5d7eea8d`](https://explorer.testnet.chain.robinhood.com/tx/0x733a0af5a6044eb6085b614223ff747918c6aae5528138bfdf79a7f35d7eea8d) |
+| Settlement | [`0xbe5f3f4a…fa937de2`](https://explorer.testnet.chain.robinhood.com/tx/0xbe5f3f4a3510aac792d8b0499647953e12044b5725a1f735cc614344fa937de2) |
+
+`wouldPass(1)` read `false` before the agent acted and `true` after, from the
+vault balance alone. The record that came out of settlement:
+
+```
+passed = 1   failed = 0   score = 206543291473892927   (20.65%)
+```
+
+**One success is worth 20.65%, not 100%.** That is the entire argument, now
+enforced by a deployed contract rather than asserted in a README. The raw rate
+after one win is 100%; the lower bound says a single observation is nearly no
+evidence, so a fresh agent cannot present itself as proven.
 
 ## Run it
 

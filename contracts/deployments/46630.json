@@ -1,0 +1,8 @@
+{
+  "chainId": 46630,
+  "network": "robinhood-testnet",
+  "deployer": "0xc807b11C29865e1Fb9df9fe3852d8d895FfF226c",
+  "agentRegistry": "0xa736E54B0fEa99809dC7eE9ce24E8B54ca6219eb",
+  "mandateManager": "0xA4C2f6F2BCA05d93F197133e9DCD25273ae6D909",
+  "explorer": "https://explorer.testnet.chain.robinhood.com"
+}

@@ -72,13 +72,13 @@ echo "manager will be at: $PREDICTED_MANAGER"
 REGISTRY=$(forge create src/AgentRegistry.sol:AgentRegistry \
   --rpc-url "$RPC" --private-key "$PRIVATE_KEY" --broadcast \
   --constructor-args "$PREDICTED_MANAGER" \
-  --json | python3 -c 'import sys,json;print(json.load(sys.stdin)["deployedTo"])')
+  2>&1 | grep 'Deployed to:' | awk '{print $3}')
 echo "AgentRegistry  : $REGISTRY"
 
 MANAGER=$(forge create src/MandateManager.sol:MandateManager \
   --rpc-url "$RPC" --private-key "$PRIVATE_KEY" --broadcast \
   --constructor-args "$REGISTRY" \
-  --json | python3 -c 'import sys,json;print(json.load(sys.stdin)["deployedTo"])')
+  2>&1 | grep 'Deployed to:' | awk '{print $3}')
 echo "MandateManager : $MANAGER"
 
 # The whole trust model rests on these two pointing at each other and nothing
