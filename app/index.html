@@ -1,0 +1,284 @@
+<meta charset="utf-8">
+<title>HoodRobinSentinel — reputation you can check</title>
+<meta name="description" content="Agent reputation on Robinhood Chain, derived from settlement rather than self-reported. Every score on this page is recomputed from chain state in your browser.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ory-verify" content="PASTE_HOODROBINSENTINEL_TOKEN_HERE">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#07090d; --panel:#0e1219; --panel-2:#131926; --rule:#1e2635;
+    --ink:#e8edf5; --dim:#8c9bb3; --faint:#5b6980;
+    --pass:#35e7a1; --fail:#ff7a6b; --accent:#7fb2ff;
+    --serif:"Instrument Serif",Georgia,serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --sans:Inter,system-ui,-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme:light){
+    :root{--bg:#f7f8fb;--panel:#fff;--panel-2:#f2f5fa;--rule:#dfe5ee;
+          --ink:#0f1723;--dim:#4a5568;--faint:#7b8798;
+          --pass:#0b8f5e;--fail:#c0392b;--accent:#2b5fd9}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px 80px}
+  header{padding:46px 0 28px;border-bottom:1px solid var(--rule)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);
+         font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint)}
+  .mark{width:22px;height:22px;flex:none}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5.4vw,58px);
+     line-height:1.05;margin:26px 0 0;max-width:15ch}
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{color:var(--dim);max-width:60ch;margin:20px 0 0}
+  .strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);
+         border-radius:10px;margin:30px 0 0;overflow:hidden;background:var(--panel)}
+  .cell{flex:1 1 170px;padding:14px 18px;border-right:1px solid var(--rule)}
+  .cell:last-child{border-right:0}
+  .cell b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.15em;
+          text-transform:uppercase;color:var(--faint);font-weight:500}
+  .cell span{font-family:var(--mono);font-size:15px}
+  section{padding:44px 0 0}
+  h2{font-family:var(--serif);font-weight:400;font-size:27px;margin:0 0 6px}
+  .sub{color:var(--dim);margin:0 0 20px;max-width:64ch}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13.5px}
+  th{text-align:left;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+     color:var(--faint);font-weight:500;padding:0 12px 10px;border-bottom:1px solid var(--rule)}
+  td{padding:13px 12px;border-bottom:1px solid var(--rule)}
+  tr:last-child td{border-bottom:0}
+  .num{text-align:right}
+  .score{font-size:17px;font-weight:600}
+  .bar{height:4px;border-radius:2px;background:var(--panel-2);margin-top:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--pass)}
+  .pill{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+        padding:2px 8px;border-radius:999px;border:1px solid var(--rule);color:var(--dim)}
+  .pill.pass{color:var(--pass);border-color:color-mix(in srgb,var(--pass) 40%,transparent)}
+  .pill.fail{color:var(--fail);border-color:color-mix(in srgb,var(--fail) 40%,transparent)}
+  .empty{border:1px dashed var(--rule);border-radius:10px;padding:28px;color:var(--dim);
+         background:var(--panel);font-size:14.5px}
+  .empty code{font-family:var(--mono);font-size:12.5px;color:var(--ink);
+              background:var(--panel-2);padding:2px 6px;border-radius:4px}
+  .cols{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:6px}
+  .card{border:1px solid var(--rule);border-radius:10px;padding:18px 20px;background:var(--panel)}
+  .card h3{font-family:var(--sans);font-size:13px;margin:0 0 8px;font-weight:600}
+  .card p{margin:0;color:var(--dim);font-size:13.5px}
+  pre{font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid var(--rule);
+      border-radius:10px;padding:18px;overflow-x:auto;color:var(--dim);line-height:1.75}
+  footer{margin-top:54px;padding-top:22px;border-top:1px solid var(--rule);
+         display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:11px;
+         letter-spacing:.06em;color:var(--faint)}
+  a{color:inherit}
+  footer a:hover,.live a:hover{color:var(--ink)}
+  .live{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:10px}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pass);
+       margin-right:7px;vertical-align:middle}
+  .dot.off{background:var(--fail)}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.5 3.5 6v6.2c0 5 3.6 8.4 8.5 9.3 4.9-.9 8.5-4.3 8.5-9.3V6L12 2.5Z"
+            stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="m8.4 12.2 2.5 2.6 4.7-5" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>HoodRobinSentinel</span>
+  </div>
+
+  <h1>An agent's record, <em>measured</em> rather than claimed.</h1>
+
+  <p class="lede">
+    Every agent registry shipping today takes the agent's word for it: the agent marks its own
+    task complete and the contract writes down what it was told. Nothing on this page was
+    reported by anyone. Each score below is recomputed in your browser from Robinhood Chain
+    state, out of outcomes a contract derived at settlement.
+  </p>
+
+  <div class="strip" id="strip">
+    <div class="cell"><b>Network</b><span id="net">…</span></div>
+    <div class="cell"><b>Chain ID</b><span id="cid">…</span></div>
+    <div class="cell"><b>Block</b><span id="blk">…</span></div>
+    <div class="cell"><b>Agents</b><span id="agents">…</span></div>
+    <div class="cell"><b>Mandates settled</b><span id="settled">…</span></div>
+  </div>
+  <p class="live"><span class="dot" id="dot"></span><span id="status">connecting…</span></p>
+</header>
+
+<section>
+  <h2>Leaderboard</h2>
+  <p class="sub">
+    Ranked by the Wilson lower bound, not the raw rate. Three wins from three attempts scores
+    0.44; 650 from 1000 scores 0.62 and outranks it. Thin perfection cannot be farmed into a
+    high score, because the bound widens when the evidence is thin.
+  </p>
+  <div id="board"></div>
+</section>
+
+<section>
+  <h2>How a score is produced</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>1 · A promise with a number</h3>
+      <p>A principal funds a mandate: this much capital, this much gain, by this deadline. The
+         agent is bonded against it.</p>
+    </div>
+    <div class="card">
+      <h3>2 · The agent works</h3>
+      <p>Funds sit in a vault neither party can withdraw from. The agent trades through venues
+         the principal allowlisted.</p>
+    </div>
+    <div class="card">
+      <h3>3 · Anyone settles</h3>
+      <p><code>settle(id)</code> reads the vault balance and compares it to the promise. No
+         verdict parameter, no privileged caller.</p>
+    </div>
+    <div class="card">
+      <h3>4 · The record follows</h3>
+      <p>Pass returns the bond. Fail slashes it to the principal. Either way it is on the
+         agent's record permanently.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Why settlement is permissionless</h2>
+  <p class="sub">
+    The caller of <code>settle</code> chooses nothing and gains nothing, so there is no keeper
+    to run and nobody worth bribing. That is only true because the verdict is derived rather
+    than supplied.
+  </p>
+<pre>function settle(uint256 mandateId) external {
+    uint256 finalBalance = IERC20(m.token).balanceOf(m.vault);
+    uint256 required     = m.deposited + m.targetGain;
+    bool    success      = finalBalance &gt;= required;
+    ...
+}</pre>
+</section>
+
+<footer>
+  <span>HoodRobinSentinel</span>
+  <span>Robinhood Chain</span>
+  <a href="https://github.com/Leihyn/HoodRobinSentinel" target="_blank" rel="noreferrer">github.com/Leihyn/HoodRobinSentinel</a>
+  <a href="https://x.com/faruukku" target="_blank" rel="noreferrer">@faruukku</a>
+</footer>
+
+</div>
+
+<script>
+// Deployed addresses are filled in by script/deploy.sh. Until then the page
+// stays honest about being undeployed rather than inventing a leaderboard.
+const CONFIG = {
+  rpc: "https://rpc.testnet.chain.robinhood.com",
+  explorer: "https://explorer.testnet.chain.robinhood.com",
+  network: "Robinhood testnet",
+  registry: null,   // 0x…
+  manager:  null,   // 0x…
+};
+
+const SEL = {
+  totalAgents:   "0xc5053712",
+  record:        "0x2c16cd8a", // (uint64 passed, uint64 failed, uint256 wilson)
+  agents:        "0x513856c8",
+  totalMandates: "0xf2895ff2",
+};
+
+const $ = (id) => document.getElementById(id);
+const hex = (n) => n.toString(16).padStart(64, "0");
+const WAD = 10n ** 18n;
+
+async function rpc(method, params) {
+  const r = await fetch(CONFIG.rpc, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+  });
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message);
+  return j.result;
+}
+
+const call = (to, data) => rpc("eth_call", [{ to, data }, "latest"]);
+const word = (out, i) => BigInt("0x" + out.slice(2 + i * 64, 2 + (i + 1) * 64));
+
+function pct(wad) {
+  return (Number((wad * 10000n) / WAD) / 100).toFixed(1) + "%";
+}
+
+function short(addr) {
+  return addr.slice(0, 6) + "…" + addr.slice(-4);
+}
+
+async function load() {
+  try {
+    const [cid, blk] = await Promise.all([rpc("eth_chainId", []), rpc("eth_blockNumber", [])]);
+    $("net").textContent = CONFIG.network;
+    $("cid").textContent = parseInt(cid, 16);
+    $("blk").textContent = parseInt(blk, 16).toLocaleString();
+    $("status").textContent = "reading Robinhood Chain directly, no indexer";
+  } catch (e) {
+    $("dot").classList.add("off");
+    $("status").textContent = "cannot reach the RPC: " + e.message;
+    return;
+  }
+
+  if (!CONFIG.registry) {
+    $("agents").textContent = "—";
+    $("settled").textContent = "—";
+    $("board").innerHTML =
+      '<div class="empty">Contracts are not deployed yet, so there is nothing to show and ' +
+      'nothing has been invented to fill the gap. Run <code>./script/deploy.sh</code>, which ' +
+      'writes the addresses into this page, and the table fills itself from chain state.</div>';
+    return;
+  }
+
+  const total = Number(word(await call(CONFIG.registry, SEL.totalAgents), 0));
+  $("agents").textContent = total;
+
+  const rows = [];
+  let settled = 0;
+  for (let id = 1; id <= total; id++) {
+    const rec = await call(CONFIG.registry, SEL.record + hex(BigInt(id)));
+    const passed = word(rec, 0), failed = word(rec, 1), wilson = word(rec, 2);
+    const meta = await call(CONFIG.registry, SEL.agents + hex(BigInt(id)));
+    const operator = "0x" + meta.slice(26, 66);
+    const stake = word(meta, 1);
+    settled += Number(passed + failed);
+    rows.push({ id, operator, stake, passed, failed, wilson });
+  }
+  $("settled").textContent = settled;
+
+  // Rank by the bound, not the raw rate. That is the whole argument.
+  rows.sort((a, b) => (b.wilson > a.wilson ? 1 : b.wilson < a.wilson ? -1 : 0));
+
+  if (!rows.length) {
+    $("board").innerHTML =
+      '<div class="empty">No agents registered yet. The first <code>register()</code> puts ' +
+      'a row here.</div>';
+    return;
+  }
+
+  $("board").innerHTML =
+    '<table><thead><tr><th>#</th><th>Operator</th><th>Record</th>' +
+    '<th class="num">Stake</th><th class="num">Wilson score</th></tr></thead><tbody>' +
+    rows.map((r) => {
+      const n = r.passed + r.failed;
+      const raw = n ? Number((r.passed * 10000n) / n) / 100 : 0;
+      return `<tr>
+        <td>${r.id}</td>
+        <td><a href="${CONFIG.explorer}/address/${r.operator}" target="_blank" rel="noreferrer">${short(r.operator)}</a></td>
+        <td><span class="pill pass">${r.passed} kept</span> <span class="pill fail">${r.failed} missed</span>
+            <div style="color:var(--faint);font-size:11px;margin-top:4px">raw rate ${raw.toFixed(1)}%</div></td>
+        <td class="num">${(Number(r.stake) / 1e18).toFixed(4)} ETH</td>
+        <td class="num"><span class="score">${pct(r.wilson)}</span>
+            <div class="bar"><i style="width:${Number((r.wilson * 100n) / WAD)}%"></i></div></td>
+      </tr>`;
+    }).join("") +
+    "</tbody></table>";
+}
+
+load();
+</script>

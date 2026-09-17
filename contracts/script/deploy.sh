@@ -98,6 +98,22 @@ echo
 echo "registry.settlement() = $WIRED_SETTLEMENT"
 echo "manager.registry()    = $WIRED_REGISTRY"
 
+# The page says deploy.sh fills these in, so it has to. A UI that claims to read
+# live addresses while holding stale ones is exactly the kind of quiet lie this
+# project exists to argue against.
+APP="../app/index.html"
+if [[ -f "$APP" ]]; then
+  python3 - "$APP" "$REGISTRY" "$MANAGER" <<'PYEOF'
+import io, re, sys
+path, registry, manager = sys.argv[1], sys.argv[2], sys.argv[3]
+s = io.open(path, encoding="utf-8").read()
+s = re.sub(r'registry:\s*[^,\n]+,', f'registry: "{registry}",', s, count=1)
+s = re.sub(r'manager:\s*[^,\n]+,', f'manager:  "{manager}",', s, count=1)
+io.open(path, "w", encoding="utf-8").write(s)
+print(f"  wrote addresses into {path}")
+PYEOF
+fi
+
 mkdir -p deployments
 cat > "deployments/${CHAIN}.json" <<JSON
 {

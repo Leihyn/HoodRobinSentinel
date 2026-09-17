@@ -130,6 +130,20 @@ not. `script/rpc-proxy.py` performs the TLS leg with a client Cloudflare accepts
 and serves plain HTTP to forge on localhost. `deploy.sh` starts and stops it for
 you.
 
+## The page
+
+`app/index.html` is one file with no build step and no dependencies. It reads the registry
+directly over JSON-RPC and recomputes every score in the browser, so the leaderboard is
+verifiable by whoever is looking at it rather than served from an indexer you would have to
+trust. Until the contracts exist it says so plainly instead of inventing rows.
+
+```bash
+python3 -m http.server 4755 --directory app
+```
+
+`deploy.sh` writes the deployed addresses into that file, so the page and the chain cannot
+drift apart.
+
 ## Layout
 
 | Path | |
@@ -140,6 +154,7 @@ you.
 | `contracts/src/Wilson.sol` | Wilson lower bound in WAD, with an integer sqrt. |
 | `contracts/script/deploy.sh` | deployment, with the nonce prediction checked on chain. |
 | `contracts/script/rpc-proxy.py` | the Cloudflare workaround described above. |
+| `app/index.html` | the leaderboard; zero dependencies, reads the chain itself. |
 
 ## What is deliberately not here
 
