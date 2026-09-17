@@ -112,6 +112,28 @@ enforced by a deployed contract rather than asserted in a README. The raw rate
 after one win is 100%; the lower bound says a single observation is nearly no
 evidence, so a fresh agent cannot present itself as proven.
 
+### And one that failed
+
+A second mandate was opened for 5,000 principal against a 200 target with a
+0.0005 ETH bond, and the agent did nothing. After the deadline, the same
+parameterless call settled it:
+[`0xea3572a8…65fdc27f`](https://explorer.testnet.chain.robinhood.com/tx/0xea3572a87a4fc4e0ade04eff6ab4a2a7e8d6fee62d52bfe76ce07c5965fdc27f).
+
+| | Before | After |
+|---|---|---|
+| Agent stake | `2e15` | `1.5e15` — the `5e14` bond forfeit exactly |
+| Principal's tokens | 95,100 | 100,100 — deposit returned in full |
+| Record | 1 / 0 | **1 passed, 1 failed** |
+
+```
+score: 206543291473892927  ->  94528654800866132     (20.65% -> 9.45%)
+```
+
+Doing nothing is a failure, not a neutral outcome, and it costs the bond. Note
+what the two settlements do to the ranking: the agent's raw success rate is a
+respectable 50%, while the bound it is ranked by is 9.45%. Two observations are
+not evidence, and the number says so without anyone deciding that it should.
+
 ## Run it
 
 ```bash
