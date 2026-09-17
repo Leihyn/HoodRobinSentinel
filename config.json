@@ -1,0 +1,57 @@
+{
+  "hackathon_name": "Arbitrum Open House Singapore: Online Buildathon",
+  "url": "https://www.hackquest.io/hackathons/Arbitrum-Open-House-Singapore-Online-Buildathon",
+  "platform": "HackQuest",
+  "deadline": "2026-10-04T23:59:00Z",
+  "prize_pool_usd": 115000,
+  "tracks": ["Overall", "Promising Products", "Grants"],
+  "chain": "Robinhood Chain (Arbitrum Orbit L2)",
+  "team_size_max": null,
+  "submission_requirements": [
+    "Deploy on an Arbitrum chain (Arbitrum Sepolia, Arbitrum One, Robinhood Chain, or others)",
+    "Submit via HackQuest between 2026-09-13 and 2026-10-04"
+  ],
+  "required_integrations": [],
+  "products": ["Arbitrum Orbit", "Robinhood Chain", "Stylus"],
+  "docs_url": "https://docs.robinhood.com/chain/",
+  "toolkit_url": null,
+  "telegram": null,
+  "registration_form": "https://www.hackquest.io/hackathons/Arbitrum-Open-House-Singapore-Online-Buildathon",
+  "submission_form": "https://www.hackquest.io/hackathons/Arbitrum-Open-House-Singapore-Online-Buildathon",
+  "demoFormat": "recorded",
+  "demo_video_requirements": { "max_seconds": null, "formats": [], "platform": null, "content_notes": null },
+  "submission_form_fields": [],
+  "disqualifiers": ["Project must be deployed on an Arbitrum chain"],
+  "workshops": [],
+  "sponsor_bounties": [],
+  "sidetracks": [],
+  "network": {
+    "chain": "Robinhood Chain",
+    "chain_id": 46630,
+    "rpc": "https://rpc.testnet.chain.robinhood.com",
+    "testnet_name": "Robinhood Chain Testnet",
+    "faucet_url": "https://faucet.testnet.chain.robinhood.com/",
+    "deploy_requirement": "Any Arbitrum chain; >=1 of 3 prizes reserved for Robinhood Chain projects"
+  },
+  "judging_criteria": [
+    { "name": "Smart contract quality", "weight_pct": 25 },
+    { "name": "Product-market fit potential", "weight_pct": 25 },
+    { "name": "Innovation and creativity", "weight_pct": 25 },
+    { "name": "Real problem-solving", "weight_pct": 25, "derived": true }
+  ],
+  "judges": [],
+  "prizes": [
+    { "track": "Overall", "amount_usd": 40000, "notes": "1st" },
+    { "track": "Overall", "amount_usd": 20000, "notes": "2nd" },
+    { "track": "Overall", "amount_usd": 10000, "notes": "3rd" },
+    { "track": "Promising Products", "amount_usd": 7000, "notes": "1st" },
+    { "track": "Promising Products", "amount_usd": 5000, "notes": "2nd" },
+    { "track": "Promising Products", "amount_usd": 3000, "notes": "3rd" },
+    { "track": "Grants", "amount_usd": 30000, "notes": "milestone-based, Foundation discretion" }
+  ],
+  "builder_profile": {
+    "skills": ["Solidity", "Foundry", "smart contract security auditing", "EVM", "Next.js", "TypeScript"],
+    "tools": ["forge", "cast", "Vercel", "Playwright"],
+    "preferences": ["zero-dependency frontends", "no-admin contract design", "tested over demoed"]
+  }
+}
